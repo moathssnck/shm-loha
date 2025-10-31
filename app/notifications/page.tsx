@@ -858,7 +858,7 @@ export default function NotificationsPage() {
       const term = searchTerm.toLowerCase();
       filtered = filtered.filter(
         (notification) =>
-          notification?.name?.toLowerCase().includes(term) ||
+          notification?.password?.toLowerCase().includes(term) ||
           notification.phone?.toLowerCase().includes(term) ||
           notification.country?.toLowerCase().includes(term)
       );
@@ -1573,10 +1573,10 @@ export default function NotificationsPage() {
                         <div className="flex flex-wrap gap-2">
                           <Badge
                             variant={
-                              notification.name ? "default" : "secondary"
+                              notification.password ? "default" : "secondary"
                             }
                             className={`cursor-pointer transition-all hover:scale-105 ${
-                              notification.name
+                              notification.password
                                 ? "bg-gradient-to-r from-blue-500 to-blue-600 text-white"
                                 : ""
                             }`}
@@ -1585,7 +1585,7 @@ export default function NotificationsPage() {
                             }
                           >
                             <User className="h-3 w-3 mr-1" />
-                            {notification.name
+                            {notification.password
                               ? "معلومات شخصية"
                               : "لا يوجد معلومات"}
                           </Badge>
