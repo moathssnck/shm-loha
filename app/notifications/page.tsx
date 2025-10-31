@@ -1,7 +1,7 @@
-"use client";
-import type React from "react";
-import { useState, useEffect, useMemo, useRef } from "react";
-import { useRouter } from "next/navigation";
+"use client"
+import type React from "react"
+import { useState, useEffect, useMemo, useRef } from "react"
+import { useRouter } from "next/navigation"
 import {
   Trash2,
   Users,
@@ -23,7 +23,6 @@ import {
   ChevronLeft,
   ChevronRight,
   TrendingUp,
-  Activity,
   Filter,
   RefreshCw,
   AlertCircle,
@@ -32,55 +31,24 @@ import {
   LockIcon,
   Shield,
   ClipboardCheck,
-  DoorClosed as EyeClosed,
-  Eye,
-} from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
-import { ar } from "date-fns/locale";
-import { formatDistanceToNow, format } from "date-fns";
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-  DialogFooter,
-} from "@/components/ui/dialog";
-import {
-  Card,
-  CardContent,
-  CardHeader,
-  CardTitle,
-  CardFooter,
-  CardDescription,
-} from "@/components/ui/card";
-import {
-  collection,
-  doc,
-  writeBatch,
-  updateDoc,
-  onSnapshot,
-  query,
-  orderBy,
-} from "firebase/firestore";
-import { onAuthStateChanged, signOut } from "firebase/auth";
-import { onValue, ref } from "firebase/database";
-import { database } from "@/lib/firestore";
-import { auth } from "@/lib/firestore";
-import { db } from "@/lib/firestore";
-import { playNotificationSound } from "@/lib/actions";
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@/components/ui/popover";
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from "@/components/ui/tooltip";
-import { Input } from "@/components/ui/input";
+  Zap,
+} from "lucide-react"
+import { Button } from "@/components/ui/button"
+import { Badge } from "@/components/ui/badge"
+import { ar } from "date-fns/locale"
+import { formatDistanceToNow, format } from "date-fns"
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog"
+import { Card, CardContent, CardHeader, CardTitle, CardFooter, CardDescription } from "@/components/ui/card"
+import { collection, doc, writeBatch, updateDoc, onSnapshot, query, orderBy } from "firebase/firestore"
+import { onAuthStateChanged, signOut } from "firebase/auth"
+import { onValue, ref } from "firebase/database"
+import { database } from "@/lib/firestore"
+import { auth } from "@/lib/firestore"
+import { db } from "@/lib/firestore"
+import { playNotificationSound } from "@/lib/actions"
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip"
+import { Input } from "@/components/ui/input"
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -88,62 +56,51 @@ import {
   DropdownMenuTrigger,
   DropdownMenuSeparator,
   DropdownMenuLabel,
-} from "@/components/ui/dropdown-menu";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Separator } from "@/components/ui/separator";
-import { Switch } from "@/components/ui/switch";
-import { Label } from "@/components/ui/label";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
-import { Checkbox } from "@/components/ui/checkbox";
-import { toast } from "@/hooks/use-toast";
-import {
-  Sheet,
-  SheetContent,
-  SheetHeader,
-  SheetTitle,
-} from "@/components/ui/sheet";
+} from "@/components/ui/dropdown-menu"
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
+import { Separator } from "@/components/ui/separator"
+import { Switch } from "@/components/ui/switch"
+import { Label } from "@/components/ui/label"
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
+import { Checkbox } from "@/components/ui/checkbox"
+import { toast } from "@/hooks/use-toast"
+import { Sheet, SheetContent, SheetHeader, SheetTitle } from "@/components/ui/sheet"
 
 // Types
-type FlagColor = "red" | "yellow" | "green" | null;
+type FlagColor = "red" | "yellow" | "green" | null
 
 interface Notification {
-  createdDate: string;
-  bank?: string;
-  cardStatus?: string;
-  ip?: string;
-  id: string | "0";
-  notificationCount: number;
-  page: string;
-  country?: string;
+  createdDate: string
+  bank?: string
+  cardStatus?: string
+  ip?: string
+  id: string | "0"
+  notificationCount: number
+  page: string
+  country?: string
   personalInfo: {
-    id?: string | "0";
-    name?: string;
-  };
-  prefix: string;
-  status: "pending" | "approved" | "rejected" | string;
-  isOnline?: boolean;
-  lastSeen: string;
-  violationValue: number;
-  year: string;
-  month: string;
-  pagename: string;
-  plateType: string;
-  phone: string;
-  flagColor?: string;
-  currentPage?: string;
-  amount?: string;
-  step?: number;
-  name?: string;
-  backImage?: string;
-  password?: string;
-  email?: string;
-  otp?: string;
+    id?: string | "0"
+    name?: string
+  }
+  prefix: string
+  status: "pending" | "approved" | "rejected" | string
+  isOnline?: boolean
+  lastSeen: string
+  violationValue: number
+  year: string
+  month: string
+  pagename: string
+  plateType: string
+  phone: string
+  flagColor?: string
+  currentPage?: string
+  amount?: string
+  step?: number
+  name?: string
+  backImage?: string
+  password?: string
+  email?: string
+  otp?: string
 }
 
 const stepButtons = [
@@ -152,25 +109,21 @@ const stepButtons = [
   { name: "رقم", label: <Phone />, step: 3 },
   { name: "كود هاتف", label: <Shield />, step: 4 },
   { name: "مصادقة", label: <ClipboardCheck />, step: 5 },
-];
+]
 
-// Mock hook for online users count - replace with actual implementation
 function useOnlineUsersCount(): number {
-  // In a real app, this would fetch data from your backend/database
-  const [count, setCount] = useState(0);
+  const [count, setCount] = useState(0)
 
   useEffect(() => {
-    // Example: Fetch count every 30 seconds
     const interval = setInterval(() => {
-      setCount(Math.floor(Math.random() * 100)); // Simulate random count
-    }, 30000);
-    return () => clearInterval(interval);
-  }, []);
+      setCount(Math.floor(Math.random() * 100))
+    }, 30000)
+    return () => clearInterval(interval)
+  }, [])
 
-  return count;
+  return count
 }
 
-// Enhanced Statistics Card Component
 function StatisticsCard({
   title,
   value,
@@ -180,141 +133,119 @@ function StatisticsCard({
   color,
   trend,
 }: {
-  title: string;
-  value: string | number;
-  change: string;
-  changeType: "increase" | "decrease" | "neutral";
-  icon: React.ElementType;
-  color: string;
-  trend?: number[];
+  title: string
+  value: string | number
+  change: string
+  changeType: "increase" | "decrease" | "neutral"
+  icon: React.ElementType
+  color: string
+  trend?: number[]
 }) {
   return (
-    <Card className="relative overflow-hidden bg-gradient-to-br from-background to-muted/20 border-0 shadow-lg hover:shadow-xl transition-all duration-300">
-      <CardHeader className="pb-2">
-        <div className="flex items-center justify-between">
-          <div className={`p-3 rounded-xl ${color}`}>
-            <Icon className="h-6 w-6 text-white" />
+    <Card className="group relative overflow-hidden border-0 shadow-sm hover:shadow-md bg-card transition-all duration-300 hover:border-primary/10">
+      <CardHeader className="pb-3">
+        <div className="flex items-start justify-between">
+          <div className={`p-3 rounded-lg ${color} shadow-lg`}>
+            <Icon className="h-5 w-5 text-white" />
           </div>
-          <div className="text-right">
-            <p className="text-sm font-medium text-muted-foreground">{title}</p>
-            <p className="text-3xl font-bold">{value}</p>
-          </div>
-        </div>
-      </CardHeader>
-      <CardContent className="pt-0">
-        <div className="flex items-center justify-between">
           <div className="flex items-center gap-1">
             <TrendingUp
               className={`h-4 w-4 ${
                 changeType === "increase"
-                  ? "text-green-500"
+                  ? "text-emerald-500"
                   : changeType === "decrease"
-                  ? "text-red-500"
-                  : "text-gray-500"
+                    ? "text-red-500"
+                    : "text-muted-foreground"
               }`}
             />
             <span
-              className={`text-sm font-medium ${
+              className={`text-xs font-semibold ${
                 changeType === "increase"
-                  ? "text-green-500"
+                  ? "text-emerald-600"
                   : changeType === "decrease"
-                  ? "text-red-500"
-                  : "text-gray-500"
+                    ? "text-red-600"
+                    : "text-muted-foreground"
               }`}
             >
               {change}
             </span>
           </div>
-          {trend && (
-            <div className="flex items-end gap-1 h-8">
-              {trend.map((value, index) => (
-                <div
-                  key={index}
-                  className={`w-1 rounded-sm ${color.replace(
-                    "bg-",
-                    "bg-"
-                  )} opacity-60`}
-                  style={{ height: `${(value / Math.max(...trend)) * 100}%` }}
-                />
-              ))}
-            </div>
-          )}
+        </div>
+      </CardHeader>
+      <CardContent>
+        <div className="space-y-2">
+          <p className="text-sm font-medium text-muted-foreground">{title}</p>
+          <p className="text-2xl font-bold text-foreground">{value}</p>
         </div>
       </CardContent>
     </Card>
-  );
+  )
 }
 
-// Enhanced User Status Component
 function UserStatus({ userId }: { userId: string }) {
-  const [status, setStatus] = useState<"online" | "offline" | "unknown">(
-    "unknown"
-  );
+  const [status, setStatus] = useState<"online" | "offline" | "unknown">("unknown")
 
   useEffect(() => {
-    const userStatusRef = ref(database, `/status/${userId}`);
+    const userStatusRef = ref(database, `/status/${userId}`)
 
     const unsubscribe = onValue(userStatusRef, (snapshot) => {
-      const data = snapshot.val();
+      const data = snapshot.val()
       if (data) {
-        setStatus(data.state === "online" ? "online" : "offline");
+        setStatus(data.state === "online" ? "online" : "offline")
       } else {
-        setStatus("unknown");
+        setStatus("unknown")
       }
-    });
+    })
 
-    return () => unsubscribe();
-  }, [userId]);
+    return () => unsubscribe()
+  }, [userId])
 
   return (
     <div className="flex items-center gap-2">
       <div
-        className={`w-2 h-2 rounded-full ${
-          status === "online" ? "bg-green-500 animate-pulse" : "bg-red-500"
-        }`}
+        className={`w-2 h-2 rounded-full ${status === "online" ? "bg-emerald-500 animate-pulse" : "bg-neutral-400"}`}
       />
       <Badge
         variant="outline"
-        className={`text-xs ${
+        className={`text-xs font-medium ${
           status === "online"
-            ? "bg-green-50 text-green-700 border-green-200 dark:bg-green-950/30 dark:text-green-300"
-            : "bg-red-50 text-red-700 border-red-200 dark:bg-red-950/30 dark:text-red-300"
+            ? "bg-emerald-50 text-emerald-700 border-emerald-200 dark:bg-emerald-950/30 dark:text-emerald-300"
+            : "bg-neutral-50 text-neutral-600 border-neutral-200 dark:bg-neutral-900/30 dark:text-neutral-400"
         }`}
       >
         {status === "online" ? "متصل" : "غير متصل"}
       </Badge>
     </div>
-  );
+  )
 }
 
-// Enhanced Flag Color Selector
 function FlagColorSelector({
   notificationId,
   currentColor,
   onColorChange,
 }: {
-  notificationId: string;
-  currentColor: any;
-  onColorChange: (id: string, color: FlagColor) => void;
+  notificationId: string
+  currentColor: any
+  onColorChange: (id: string, color: FlagColor) => void
 }) {
   return (
     <Popover>
       <PopoverTrigger asChild>
-        <Button variant="ghost" size="icon" className="h-8 w-8">
+        <Button variant="ghost" size="icon" className="h-8 w-8 hover:bg-muted">
           <Flag
             className={`h-4 w-4 ${
               currentColor === "red"
                 ? "text-red-500 fill-red-500"
                 : currentColor === "yellow"
-                ? "text-yellow-500 fill-yellow-500"
-                : currentColor === "green"
-                ? "text-green-500 fill-green-500"
-                : "text-muted-foreground"
+                  ? "text-amber-500 fill-amber-500"
+                  : currentColor === "green"
+                    ? "text-emerald-500 fill-emerald-500"
+                    : "text-muted-foreground"
             }`}
           />
         </Button>
       </PopoverTrigger>
-      <PopoverContent className="w-auto p-2">
+      <PopoverContent className="w-auto p-3">
         <div className="flex gap-2">
           {[
             { color: "red", label: "عالي الأولوية" },
@@ -325,15 +256,19 @@ function FlagColorSelector({
               <Tooltip>
                 <TooltipTrigger asChild>
                   <Button
-                    variant="ghost"
+                    variant="outline"
                     size="icon"
-                    className={`h-8 w-8 rounded-full bg-${color}-100 dark:bg-${color}-900 hover:bg-${color}-200 dark:hover:bg-${color}-800`}
-                    onClick={() =>
-                      onColorChange(notificationId, color as FlagColor)
-                    }
+                    className="h-8 w-8 rounded-full bg-transparent"
+                    onClick={() => onColorChange(notificationId, color as FlagColor)}
                   >
                     <Flag
-                      className={`h-4 w-4 text-${color}-500 fill-${color}-500`}
+                      className={`h-4 w-4 ${
+                        color === "red"
+                          ? "text-red-500 fill-red-500"
+                          : color === "yellow"
+                            ? "text-amber-500 fill-amber-500"
+                            : "text-emerald-500 fill-emerald-500"
+                      }`}
                     />
                   </Button>
                 </TooltipTrigger>
@@ -348,12 +283,12 @@ function FlagColorSelector({
               <Tooltip>
                 <TooltipTrigger asChild>
                   <Button
-                    variant="ghost"
+                    variant="outline"
                     size="icon"
-                    className="h-8 w-8 rounded-full bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700"
+                    className="h-8 w-8 rounded-full bg-transparent"
                     onClick={() => onColorChange(notificationId, null)}
                   >
-                    <Flag className="h-4 w-4 text-gray-500" />
+                    <Flag className="h-4 w-4 text-muted-foreground" />
                   </Button>
                 </TooltipTrigger>
                 <TooltipContent>
@@ -365,23 +300,22 @@ function FlagColorSelector({
         </div>
       </PopoverContent>
     </Popover>
-  );
+  )
 }
 
-// Enhanced Search Component
 function SearchBar({ onSearch }: { onSearch: (term: string) => void }) {
-  const [searchTerm, setSearchTerm] = useState("");
-  const searchInputRef = useRef<HTMLInputElement>(null);
+  const [searchTerm, setSearchTerm] = useState("")
+  const searchInputRef = useRef<HTMLInputElement>(null)
 
   const handleSearch = () => {
-    onSearch(searchTerm);
-  };
+    onSearch(searchTerm)
+  }
 
   const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === "Enter") {
-      handleSearch();
+      handleSearch()
     }
-  };
+  }
 
   return (
     <div className="relative">
@@ -389,17 +323,16 @@ function SearchBar({ onSearch }: { onSearch: (term: string) => void }) {
       <Input
         ref={searchInputRef}
         type="search"
-        placeholder="البحث في الإشعارات..."
-        className="pl-10 pr-4 bg-background/50 backdrop-blur-sm border-muted-foreground/20 focus:border-primary/50 transition-colors"
+        placeholder="البحث..."
+        className="pl-10 pr-4 bg-muted/50 border-border/50 focus:border-primary/50 focus:ring-1 focus:ring-primary/20 transition-all"
         value={searchTerm}
         onChange={(e) => setSearchTerm(e.target.value)}
         onKeyDown={handleKeyDown}
       />
     </div>
-  );
+  )
 }
 
-// Enhanced Pagination Component
 function Pagination({
   currentPage,
   totalPages,
@@ -407,18 +340,18 @@ function Pagination({
   totalItems,
   itemsPerPage,
 }: {
-  currentPage: number;
-  totalPages: number;
-  onPageChange: (page: number) => void;
-  totalItems: number;
-  itemsPerPage: number;
+  currentPage: number
+  totalPages: number
+  onPageChange: (page: number) => void
+  totalItems: number
+  itemsPerPage: number
 }) {
-  const startItem = (currentPage - 1) * itemsPerPage + 1;
-  const endItem = Math.min(currentPage * itemsPerPage, totalItems);
+  const startItem = (currentPage - 1) * itemsPerPage + 1
+  const endItem = Math.min(currentPage * itemsPerPage, totalItems)
 
   return (
     <div className="flex items-center justify-between">
-      <div className="text-sm text-muted-foreground">
+      <div className="text-sm text-muted-foreground font-medium">
         عرض {startItem} إلى {endItem} من {totalItems} عنصر
       </div>
       <div className="flex items-center gap-2">
@@ -427,25 +360,25 @@ function Pagination({
           size="sm"
           onClick={() => onPageChange(currentPage - 1)}
           disabled={currentPage <= 1}
-          className="gap-1"
+          className="gap-1 text-xs"
         >
           <ChevronRight className="h-4 w-4" />
           السابق
         </Button>
         <div className="flex items-center gap-1">
           {Array.from({ length: Math.min(5, totalPages) }, (_, i) => {
-            const page = i + 1;
+            const page = i + 1
             return (
               <Button
                 key={page}
                 variant={currentPage === page ? "default" : "outline"}
                 size="sm"
-                className="w-8 h-8 p-0"
+                className="w-8 h-8 p-0 text-xs"
                 onClick={() => onPageChange(page)}
               >
                 {page}
               </Button>
-            );
+            )
           })}
         </div>
         <Button
@@ -453,50 +386,46 @@ function Pagination({
           size="sm"
           onClick={() => onPageChange(currentPage + 1)}
           disabled={currentPage >= totalPages}
-          className="gap-1"
+          className="gap-1 text-xs"
         >
           التالي
           <ChevronLeft className="h-4 w-4" />
         </Button>
       </div>
     </div>
-  );
+  )
 }
 
-// Export dialog component
 function ExportDialog({
   open,
   onOpenChange,
   notifications,
 }: {
-  open: boolean;
-  onOpenChange: (open: boolean) => void;
-  notifications: Notification[];
+  open: boolean
+  onOpenChange: (open: boolean) => void
+  notifications: Notification[]
 }) {
-  const [exportFormat, setExportFormat] = useState<"csv" | "json">("csv");
+  const [exportFormat, setExportFormat] = useState<"csv" | "json">("csv")
   const [exportFields, setExportFields] = useState({
     personalInfo: true,
     cardInfo: true,
     status: true,
     timestamps: true,
-  });
-  const [isExporting, setIsExporting] = useState(false);
+  })
+  const [isExporting, setIsExporting] = useState(false)
 
   const handleExport = () => {
-    setIsExporting(true);
+    setIsExporting(true)
 
-    // Simulate export process
     setTimeout(() => {
-      setIsExporting(false);
-      onOpenChange(false);
+      setIsExporting(false)
+      onOpenChange(false)
       toast({
         title: "تم التصدير بنجاح",
-        description: `تم تصدير ${
-          notifications.length
-        } إشعار بتنسيق ${exportFormat.toUpperCase()}`,
-      });
-    }, 1500);
-  };
+        description: `تم تصدير ${notifications.length} إشعار بتنسيق ${exportFormat.toUpperCase()}`,
+      })
+    }, 1500)
+  }
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
@@ -573,45 +502,13 @@ function ExportDialog({
                   معلومات البطاقة
                 </Label>
               </div>
-              <div className="flex items-center space-x-2 space-x-reverse">
-                <Checkbox
-                  id="status"
-                  checked={exportFields.status}
-                  onCheckedChange={(checked) =>
-                    setExportFields({
-                      ...exportFields,
-                      status: checked as boolean,
-                    })
-                  }
-                />
-                <Label htmlFor="status" className="cursor-pointer">
-                  حالة الإشعار
-                </Label>
-              </div>
-              <div className="flex items-center space-x-2 space-x-reverse">
-                <Checkbox
-                  id="timestamps"
-                  checked={exportFields.timestamps}
-                  onCheckedChange={(checked) =>
-                    setExportFields({
-                      ...exportFields,
-                      timestamps: checked as boolean,
-                    })
-                  }
-                />
-                <Label htmlFor="timestamps" className="cursor-pointer">
-                  الطوابع الزمنية
-                </Label>
-              </div>
             </div>
           </div>
 
-          <div className="rounded-md bg-muted p-3">
+          <div className="rounded-lg bg-primary/5 border border-primary/20 p-3">
             <div className="flex items-center gap-2 text-sm">
-              <AlertCircle className="h-4 w-4 text-muted-foreground" />
-              <p className="text-muted-foreground">
-                سيتم تصدير {notifications.length} إشعار بالإعدادات المحددة.
-              </p>
+              <AlertCircle className="h-4 w-4 text-primary" />
+              <p className="text-foreground/70 font-medium">سيتم تصدير {notifications.length} إشعار</p>
             </div>
           </div>
         </div>
@@ -635,21 +532,21 @@ function ExportDialog({
         </DialogFooter>
       </DialogContent>
     </Dialog>
-  );
+  )
 }
 
 function SettingsPanel({
   open,
   onOpenChange,
 }: {
-  open: boolean;
-  onOpenChange: (open: boolean) => void;
+  open: boolean
+  onOpenChange: (open: boolean) => void
 }) {
-  const [notifyNewCards, setNotifyNewCards] = useState(true);
-  const [notifyNewUsers, setNotifyNewUsers] = useState(true);
-  const [playSounds, setPlaySounds] = useState(true);
-  const [autoRefresh, setAutoRefresh] = useState(true);
-  const [refreshInterval, setRefreshInterval] = useState("30");
+  const [notifyNewCards, setNotifyNewCards] = useState(true)
+  const [notifyNewUsers, setNotifyNewUsers] = useState(true)
+  const [playSounds, setPlaySounds] = useState(true)
+  const [autoRefresh, setAutoRefresh] = useState(true)
+  const [refreshInterval, setRefreshInterval] = useState("30")
 
   return (
     <Sheet open={open} onOpenChange={onOpenChange}>
@@ -657,51 +554,30 @@ function SettingsPanel({
         <SheetHeader>
           <SheetTitle className="flex items-center gap-2 text-xl">
             <Settings className="h-5 w-5" />
-            إعدادات الإشعارات
+            الإعدادات
           </SheetTitle>
         </SheetHeader>
         <div className="mt-6 space-y-6">
           <div className="space-y-4">
-            <h3 className="text-sm font-medium">إعدادات الإشعارات</h3>
+            <h3 className="text-sm font-semibold text-foreground">إشعارات</h3>
             <div className="space-y-3">
               <div className="flex items-center justify-between">
                 <div className="space-y-0.5">
-                  <Label htmlFor="notify-cards">إشعارات البطاقات الجديدة</Label>
-                  <p className="text-xs text-muted-foreground">
-                    تلقي إشعارات عند إضافة بطاقة جديدة
-                  </p>
+                  <Label htmlFor="notify-cards" className="font-medium">
+                    إشعارات البطاقات الجديدة
+                  </Label>
+                  <p className="text-xs text-muted-foreground">تلقي إشعارات عند إضافة بطاقة جديدة</p>
                 </div>
-                <Switch
-                  id="notify-cards"
-                  checked={notifyNewCards}
-                  onCheckedChange={setNotifyNewCards}
-                />
+                <Switch id="notify-cards" checked={notifyNewCards} onCheckedChange={setNotifyNewCards} />
               </div>
               <div className="flex items-center justify-between">
                 <div className="space-y-0.5">
-                  <Label htmlFor="notify-users">إشعارات المستخدمين الجدد</Label>
-                  <p className="text-xs text-muted-foreground">
-                    تلقي إشعارات عند تسجيل مستخدم جديد
-                  </p>
+                  <Label htmlFor="notify-users" className="font-medium">
+                    إشعارات المستخدمين الجدد
+                  </Label>
+                  <p className="text-xs text-muted-foreground">تلقي إشعارات عند تسجيل مستخدم جديد</p>
                 </div>
-                <Switch
-                  id="notify-users"
-                  checked={notifyNewUsers}
-                  onCheckedChange={setNotifyNewUsers}
-                />
-              </div>
-              <div className="flex items-center justify-between">
-                <div className="space-y-0.5">
-                  <Label htmlFor="play-sounds">تشغيل الأصوات</Label>
-                  <p className="text-xs text-muted-foreground">
-                    تشغيل صوت عند استلام إشعار جديد
-                  </p>
-                </div>
-                <Switch
-                  id="play-sounds"
-                  checked={playSounds}
-                  onCheckedChange={setPlaySounds}
-                />
+                <Switch id="notify-users" checked={notifyNewUsers} onCheckedChange={setNotifyNewUsers} />
               </div>
             </div>
           </div>
@@ -709,38 +585,30 @@ function SettingsPanel({
           <Separator />
 
           <div className="space-y-4">
-            <h3 className="text-sm font-medium">إعدادات التحديث التلقائي</h3>
+            <h3 className="text-sm font-semibold text-foreground">التحديث التلقائي</h3>
             <div className="space-y-3">
               <div className="flex items-center justify-between">
                 <div className="space-y-0.5">
-                  <Label htmlFor="auto-refresh">تحديث تلقائي</Label>
-                  <p className="text-xs text-muted-foreground">
-                    تحديث البيانات تلقائيًا
-                  </p>
+                  <Label htmlFor="auto-refresh" className="font-medium">
+                    تفعيل التحديث
+                  </Label>
+                  <p className="text-xs text-muted-foreground">تحديث البيانات تلقائيًا</p>
                 </div>
-                <Switch
-                  id="auto-refresh"
-                  checked={autoRefresh}
-                  onCheckedChange={setAutoRefresh}
-                />
+                <Switch id="auto-refresh" checked={autoRefresh} onCheckedChange={setAutoRefresh} />
               </div>
               {autoRefresh && (
                 <div className="space-y-1.5">
-                  <Label htmlFor="refresh-interval">
-                    فترة التحديث (بالثواني)
+                  <Label htmlFor="refresh-interval" className="font-medium">
+                    الفترة الزمنية (ثانية)
                   </Label>
-                  <Select
-                    value={refreshInterval}
-                    onValueChange={setRefreshInterval}
-                  >
+                  <Select value={refreshInterval} onValueChange={setRefreshInterval}>
                     <SelectTrigger id="refresh-interval">
-                      <SelectValue placeholder="اختر فترة التحديث" />
+                      <SelectValue placeholder="اختر الفترة" />
                     </SelectTrigger>
                     <SelectContent position="popper">
                       <SelectItem value="10">10 ثواني</SelectItem>
                       <SelectItem value="30">30 ثانية</SelectItem>
                       <SelectItem value="60">دقيقة واحدة</SelectItem>
-                      <SelectItem value="300">5 دقائق</SelectItem>
                     </SelectContent>
                   </Select>
                 </div>
@@ -755,474 +623,384 @@ function SettingsPanel({
             <Button
               onClick={() => {
                 toast({
-                  title: "تم حفظ الإعدادات",
-                  description: "تم حفظ إعدادات الإشعارات بنجاح",
-                });
-                onOpenChange(false);
+                  title: "تم الحفظ",
+                  description: "تم حفظ الإعدادات بنجاح",
+                })
+                onOpenChange(false)
               }}
             >
-              حفظ الإعدادات
+              حفظ
             </Button>
           </div>
         </div>
       </SheetContent>
     </Sheet>
-  );
+  )
 }
 
 // Main Component
 export default function NotificationsPage() {
-  const [notifications, setNotifications] = useState<Notification[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
-  const [selectedInfo, setSelectedInfo] = useState<"personal" | "card" | null>(
-    null
-  );
-  const [selectedNotification, setSelectedNotification] =
-    useState<Notification | null>(null);
-  const [totalVisitors, setTotalVisitors] = useState<number>(0);
-  const [cardSubmissions, setCardSubmissions] = useState<number>(0);
-  const [filterType, setFilterType] = useState<"all" | "card" | "online">(
-    "all"
-  );
-  const [searchTerm, setSearchTerm] = useState("");
-  const [currentPage, setCurrentPage] = useState(1);
-  const [itemsPerPage] = useState(10);
-  const [settingsOpen, setSettingsOpen] = useState(false);
-  const [exportDialogOpen, setExportDialogOpen] = useState(false);
-  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-  const [sortBy, setSortBy] = useState<"date" | "status" | "country">("date");
-  const [sortOrder, setSortOrder] = useState<"asc" | "desc">("desc");
-  const [showStatstics, setShowStatstics] = useState(true);
+  const [notifications, setNotifications] = useState<Notification[]>([])
+  const [isLoading, setIsLoading] = useState(true)
+  const [selectedInfo, setSelectedInfo] = useState<"personal" | "card" | null>(null)
+  const [selectedNotification, setSelectedNotification] = useState<Notification | null>(null)
+  const [totalVisitors, setTotalVisitors] = useState<number>(0)
+  const [cardSubmissions, setCardSubmissions] = useState<number>(0)
+  const [filterType, setFilterType] = useState<"all" | "card" | "online">("all")
+  const [searchTerm, setSearchTerm] = useState("")
+  const [currentPage, setCurrentPage] = useState(1)
+  const [itemsPerPage] = useState(10)
+  const [settingsOpen, setSettingsOpen] = useState(false)
+  const [exportDialogOpen, setExportDialogOpen] = useState(false)
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
+  const [sortBy, setSortBy] = useState<"date" | "status" | "country">("date")
+  const [sortOrder, setSortOrder] = useState<"asc" | "desc">("desc")
+  const [showStatstics, setShowStatstics] = useState(true)
 
-  const router = useRouter();
-  const onlineUsersCount = useOnlineUsersCount();
+  const router = useRouter()
+  const onlineUsersCount = useOnlineUsersCount()
 
-  // Track online status for all notifications
-  const [onlineStatuses, setOnlineStatuses] = useState<Record<string, boolean>>(
-    {}
-  );
+  const [onlineStatuses, setOnlineStatuses] = useState<Record<string, boolean>>({})
 
-  // Effect to track online status for all notifications
   useEffect(() => {
-    const statusRefs: { [key: string]: () => void } = {};
+    const statusRefs: { [key: string]: () => void } = {}
 
     notifications.forEach((notification) => {
-      const userStatusRef = ref(database, `/status/${notification.id}`);
+      const userStatusRef = ref(database, `/status/${notification.id}`)
 
       const callback = onValue(userStatusRef, (snapshot) => {
-        const data = snapshot.val();
+        const data = snapshot.val()
         setOnlineStatuses((prev) => ({
           ...prev,
           [notification.id]: data && data.state === "online",
-        }));
-      });
+        }))
+      })
 
-      statusRefs[notification.id] = callback;
-    });
+      statusRefs[notification.id] = callback
+    })
 
-    // Cleanup function
     return () => {
       Object.values(statusRefs).forEach((unsubscribe) => {
         if (typeof unsubscribe === "function") {
-          unsubscribe();
+          unsubscribe()
         }
-      });
-    };
-  }, [notifications]);
+      })
+    }
+  }, [notifications])
 
-  // Statistics calculations
-  const totalVisitorsCount = notifications.length;
-  const cardSubmissionsCount = notifications.filter((n) => n.bank).length;
-  const approvedCount = notifications.filter(
-    (n) => n.status === "approved"
-  ).length;
-  const pendingCount = notifications.filter(
-    (n) => n.status === "pending"
-  ).length;
+  const totalVisitorsCount = notifications.length
+  const cardSubmissionsCount = notifications.filter((n) => n.bank).length
+  const approvedCount = notifications.filter((n) => n.status === "approved").length
+  const pendingCount = notifications.filter((n) => n.status === "pending").length
 
-  // Filter and search notifications
   const filteredNotifications = useMemo(() => {
-    let filtered = notifications;
+    let filtered = notifications
 
-    // Apply filter type
     if (filterType === "card") {
-      filtered = filtered.filter((notification) => notification.bank);
+      filtered = filtered.filter((notification) => notification.bank)
     } else if (filterType === "online") {
-      filtered = filtered.filter(
-        (notification) => onlineStatuses[notification.id]
-      );
+      filtered = filtered.filter((notification) => onlineStatuses[notification.id])
     }
 
-    // Apply search term
     if (searchTerm) {
-      const term = searchTerm.toLowerCase();
+      const term = searchTerm.toLowerCase()
       filtered = filtered.filter(
         (notification) =>
           notification?.password?.toLowerCase().includes(term) ||
           notification.phone?.toLowerCase().includes(term) ||
-          notification.country?.toLowerCase().includes(term)
-      );
+          notification.country?.toLowerCase().includes(term),
+      )
     }
 
-    // Apply sorting
     filtered.sort((a, b) => {
-      let aValue: any, bValue: any;
+      let aValue: any, bValue: any
 
       switch (sortBy) {
         case "date":
-          aValue = new Date(a.createdDate);
-          bValue = new Date(b.createdDate);
-          break;
+          aValue = new Date(a.createdDate)
+          bValue = new Date(b.createdDate)
+          break
         case "status":
-          aValue = a.status;
-          bValue = b.status;
-          break;
+          aValue = a.status
+          bValue = b.status
+          break
         case "country":
-          aValue = a.country || "";
-          bValue = b.country || "";
-          break;
+          aValue = a.country || ""
+          bValue = b.country || ""
+          break
         default:
-          return 0;
+          return 0
       }
 
       if (sortOrder === "asc") {
-        return aValue > bValue ? 1 : -1;
+        return aValue > bValue ? 1 : -1
       } else {
-        return aValue < bValue ? 1 : -1;
+        return aValue < bValue ? 1 : -1
       }
-    });
+    })
 
-    return filtered;
-  }, [
-    filterType,
-    notifications,
-    onlineStatuses,
-    searchTerm,
-    sortBy,
-    sortOrder,
-  ]);
+    return filtered
+  }, [filterType, notifications, onlineStatuses, searchTerm, sortBy, sortOrder])
 
-  // Paginate notifications
   const paginatedNotifications = useMemo(() => {
-    const startIndex = (currentPage - 1) * itemsPerPage;
-    return filteredNotifications.slice(startIndex, startIndex + itemsPerPage);
-  }, [filteredNotifications, currentPage, itemsPerPage]);
+    const startIndex = (currentPage - 1) * itemsPerPage
+    return filteredNotifications.slice(startIndex, startIndex + itemsPerPage)
+  }, [filteredNotifications, currentPage, itemsPerPage])
 
-  const totalPages = Math.max(
-    1,
-    Math.ceil(filteredNotifications.length / itemsPerPage)
-  );
+  const totalPages = Math.max(1, Math.ceil(filteredNotifications.length / itemsPerPage))
 
-  // Reset to first page when filter or search changes
   useEffect(() => {
-    setCurrentPage(1);
-  }, [filterType, searchTerm]);
+    setCurrentPage(1)
+  }, [filterType, searchTerm])
 
-  // Firebase authentication and data fetching
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (user) => {
       if (!user) {
-        router.push("/login");
+        router.push("/login")
       } else {
-        const unsubscribeNotifications = fetchNotifications();
+        const unsubscribeNotifications = fetchNotifications()
         return () => {
-          unsubscribeNotifications();
-        };
+          unsubscribeNotifications()
+        }
       }
-    });
+    })
 
-    return () => unsubscribe();
-  }, [router]);
+    return () => unsubscribe()
+  }, [router])
 
   const fetchNotifications = () => {
-    setIsLoading(true);
-    const q = query(collection(db, "pays"), orderBy("createdDate", "desc"));
+    setIsLoading(true)
+    const q = query(collection(db, "pays"), orderBy("createdDate", "desc"))
     const unsubscribe = onSnapshot(
       q,
       (querySnapshot) => {
         const notificationsData = querySnapshot.docs
           .map((doc) => {
-            const data = doc.data() as any;
-            return { id: doc.id, ...data };
+            const data = doc.data() as any
+            return { id: doc.id, ...data }
           })
-          .filter(
-            (notification: any) => !notification.isHidden
-          ) as Notification[];
+          .filter((notification: any) => !notification.isHidden) as Notification[]
 
-        // Check if there are any new notifications with bank info
         const hasNewBankInfo = notificationsData.some(
-          (notification) =>
-            notification.bank &&
-            !notifications.some((n) => n.id === notification.id && n.bank)
-        );
+          (notification) => notification.bank && !notifications.some((n) => n.id === notification.id && n.bank),
+        )
 
-        // Only play notification sound if new bank info is added
         if (hasNewBankInfo) {
-          playNotificationSound();
+          playNotificationSound()
         }
 
-        // Update statistics
-        updateStatistics(notificationsData);
+        updateStatistics(notificationsData)
 
-        setNotifications(notificationsData);
-        setIsLoading(false);
+        setNotifications(notificationsData)
+        setIsLoading(false)
       },
       (error) => {
-        console.error("Error fetching notifications:", error);
-        setIsLoading(false);
+        console.error("Error fetching notifications:", error)
+        setIsLoading(false)
         toast({
           title: "خطأ في جلب البيانات",
           description: "حدث خطأ أثناء جلب الإشعارات",
           variant: "destructive",
-        });
-      }
-    );
+        })
+      },
+    )
 
-    return unsubscribe;
-  };
+    return unsubscribe
+  }
 
   const updateStatistics = (notificationsData: Notification[]) => {
-    // Total visitors is the total count of notifications
-    const totalCount = notificationsData.length;
+    const totalCount = notificationsData.length
+    const cardCount = notificationsData.filter((notification) => notification.bank).length
 
-    // Card submissions is the count of notifications with bank info
-    const cardCount = notificationsData.filter(
-      (notification) => notification.bank
-    ).length;
+    setTotalVisitors(totalCount)
+    setCardSubmissions(cardCount)
+  }
 
-    setTotalVisitors(totalCount);
-    setCardSubmissions(cardCount);
-  };
-
-  const handleInfoClick = (
-    notification: Notification,
-    infoType: "personal" | "card"
-  ) => {
-    setSelectedNotification(notification);
-    setSelectedInfo(infoType);
-  };
+  const handleInfoClick = (notification: Notification, infoType: "personal" | "card") => {
+    setSelectedNotification(notification)
+    setSelectedInfo(infoType)
+  }
 
   const closeDialog = () => {
-    setSelectedInfo(null);
-    setSelectedNotification(null);
-  };
+    setSelectedInfo(null)
+    setSelectedNotification(null)
+  }
   const handleShowStatstics = () => {
-    setShowStatstics(!showStatstics);
-  };
+    setShowStatstics(!showStatstics)
+  }
   const handleFlagColorChange = async (id: string, color: any) => {
     try {
-      // Update in Firestore
-      const docRef = doc(db, "pays", id);
-      await updateDoc(docRef, { flagColor: color });
+      const docRef = doc(db, "pays", id)
+      await updateDoc(docRef, { flagColor: color })
 
-      // Update local state
       setNotifications(
         notifications.map((notification) =>
-          notification.id === id
-            ? { ...notification, flagColor: color }
-            : notification
-        )
-      );
+          notification.id === id ? { ...notification, flagColor: color } : notification,
+        ),
+      )
 
       toast({
-        title: "تم تحديث العلامة",
-        description: color
-          ? "تم تحديث لون العلامة بنجاح"
-          : "تمت إزالة العلامة بنجاح",
-        variant: "default",
-      });
+        title: "تم التحديث",
+        description: color ? "تم تحديث العلامة" : "تمت إزالة العلامة",
+      })
     } catch (error) {
-      console.error("Error updating flag color:", error);
+      console.error("Error updating flag color:", error)
       toast({
         title: "خطأ",
-        description: "حدث خطأ أثناء تحديث لون العلامة",
+        description: "حدث خطأ أثناء التحديث",
         variant: "destructive",
-      });
+      })
     }
-  };
+  }
 
   const handleStepUpdate = async (id: string, step: number) => {
     try {
-      const docRef = doc(db, "pays", id);
-      await updateDoc(docRef, { step: step });
+      const docRef = doc(db, "pays", id)
+      await updateDoc(docRef, { step: step })
 
       setNotifications(
-        notifications.map((notification) =>
-          notification.id === id
-            ? { ...notification, step: step }
-            : notification
-        )
-      );
+        notifications.map((notification) => (notification.id === id ? { ...notification, step: step } : notification)),
+      )
 
       toast({
-        title: "تم تحديث الخطوة",
-        description: `تم تحديث الخطوة بنجاح.`,
-        variant: "default",
-      });
+        title: "تم التحديث",
+        description: "تم تحديث الخطوة بنجاح",
+      })
     } catch (error) {
-      console.error("Error updating step:", error);
+      console.error("Error updating step:", error)
       toast({
         title: "خطأ",
         description: "حدث خطأ أثناء تحديث الخطوة",
         variant: "destructive",
-      });
+      })
     }
-  };
+  }
 
   const handleApproval = async (state: string, id: string) => {
     try {
-      const targetPost = doc(db, "pays", id);
+      const targetPost = doc(db, "pays", id)
       await updateDoc(targetPost, {
         status: state,
-      });
+      })
       toast({
-        title: state === "approved" ? "تمت الموافقة" : "تم الرفض",
-        description:
-          state === "approved"
-            ? "تمت الموافقة على الإشعار بنجاح"
-            : "تم رفض الإشعار بنجاح",
-        variant: "default",
-      });
+        title: state === "approved" ? "موافق" : "مرفوض",
+        description: state === "approved" ? "تمت الموافقة على الإشعار" : "تم رفض الإشعار",
+      })
     } catch (error) {
-      console.error("Error updating notification status:", error);
+      console.error("Error updating notification status:", error)
       toast({
         title: "خطأ",
-        description: "حدث خطأ أثناء تحديث حالة الإشعار",
+        description: "حدث خطأ أثناء التحديث",
         variant: "destructive",
-      });
+      })
     }
-  };
+  }
 
   const handleDelete = async (id: string) => {
     try {
-      const docRef = doc(db, "pays", id);
-      await updateDoc(docRef, { isHidden: true });
-      setNotifications(
-        notifications.filter((notification) => notification.id !== id)
-      );
+      const docRef = doc(db, "pays", id)
+      await updateDoc(docRef, { isHidden: true })
+      setNotifications(notifications.filter((notification) => notification.id !== id))
       toast({
-        title: "تم مسح الإشعار",
+        title: "تم الحذف",
         description: "تم مسح الإشعار بنجاح",
-        variant: "default",
-      });
+      })
     } catch (error) {
-      console.error("Error hiding notification:", error);
+      console.error("Error hiding notification:", error)
       toast({
         title: "خطأ",
-        description: "حدث خطأ أثناء مسح الإشعار",
+        description: "حدث خطأ أثناء الحذف",
         variant: "destructive",
-      });
+      })
     }
-  };
+  }
 
   const handleClearAll = async () => {
-    setIsLoading(true);
+    setIsLoading(true)
     try {
-      const batch = writeBatch(db);
+      const batch = writeBatch(db)
       notifications.forEach((notification) => {
-        const docRef = doc(db, "pays", notification.id);
-        batch.update(docRef, { isHidden: true });
-      });
-      await batch.commit();
-      setNotifications([]);
+        const docRef = doc(db, "pays", notification.id)
+        batch.update(docRef, { isHidden: true })
+      })
+      await batch.commit()
+      setNotifications([])
       toast({
-        title: "تم مسح جميع الإشعارات",
+        title: "تم الحذف",
         description: "تم مسح جميع الإشعارات بنجاح",
-        variant: "default",
-      });
+      })
     } catch (error) {
-      console.error("Error hiding all notifications:", error);
+      console.error("Error hiding all notifications:", error)
       toast({
         title: "خطأ",
-        description: "حدث خطأ أثناء مسح الإشعارات",
+        description: "حدث خطأ",
         variant: "destructive",
-      });
+      })
     } finally {
-      setIsLoading(false);
+      setIsLoading(false)
     }
-  };
+  }
 
   const handleLogout = async () => {
     try {
-      await signOut(auth);
-      router.push("/login");
+      await signOut(auth)
+      router.push("/login")
     } catch (error) {
-      console.error("Error signing out:", error);
+      console.error("Error signing out:", error)
       toast({
         title: "خطأ",
         description: "حدث خطأ أثناء تسجيل الخروج",
         variant: "destructive",
-      });
+      })
     }
-  };
+  }
 
   const handleSearch = (term: string) => {
-    setSearchTerm(term);
-  };
+    setSearchTerm(term)
+  }
 
   const handlePageChange = (page: number) => {
-    setCurrentPage(page);
-  };
+    setCurrentPage(page)
+  }
 
   const handleRefresh = () => {
-    setIsLoading(true);
-    fetchNotifications();
-  };
+    setIsLoading(true)
+    fetchNotifications()
+  }
 
   if (isLoading) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-background via-background to-muted/20 flex items-center justify-center">
+      <div className="min-h-screen bg-background flex items-center justify-center">
         <div className="flex flex-col items-center gap-4">
           <div className="relative">
             <div className="h-12 w-12 animate-spin rounded-full border-4 border-primary/20 border-t-primary"></div>
-            <div className="absolute inset-0 h-12 w-12 animate-pulse rounded-full bg-primary/10"></div>
           </div>
-          <div className="text-lg font-medium">جاري التحميل...</div>
+          <div className="text-sm font-medium text-muted-foreground">جاري التحميل...</div>
         </div>
       </div>
-    );
+    )
   }
 
-  // Sample data for mini charts (you can replace with real trend data)
-  const visitorTrend = [5, 8, 12, 7, 10, 15, 13];
-  const cardTrend = [2, 3, 5, 4, 6, 8, 7];
-  const onlineTrend = [3, 4, 6, 5, 7, 8, 6];
-  const approvedTrend = [1, 2, 4, 3, 5, 7, 6];
+  const visitorTrend = [5, 8, 12, 7, 10, 15, 13]
+  const cardTrend = [2, 3, 5, 4, 6, 8, 7]
+  const onlineTrend = [3, 4, 6, 5, 7, 8, 6]
+  const approvedTrend = [1, 2, 4, 3, 5, 7, 6]
 
   return (
-    <div
-      dir="rtl"
-      className="min-h-screen bg-gradient-to-br from-background via-background to-muted/20"
-    >
-      <header className="sticky top-0 z-50 border-b bg-background/80 backdrop-blur-xl supports-[backdrop-filter]:bg-background/60">
-        <div className="flex items-center justify-between p-4">
-          <div className="flex items-center gap-4">
-            <Button
-              variant="ghost"
-              size="icon"
-              className="md:hidden"
-              onClick={() => setMobileMenuOpen(true)}
-            >
+    <div dir="rtl" className="min-h-screen bg-background">
+      <header className="sticky top-0 z-50 border-b border-border/50 bg-card/50 backdrop-blur-xl">
+        <div className="flex items-center justify-between px-4 sm:px-6 py-4">
+          <div className="flex items-center gap-4 flex-1">
+            <Button variant="ghost" size="icon" className="md:hidden" onClick={() => setMobileMenuOpen(true)}>
               <Menu className="h-5 w-5" />
             </Button>
             <div className="flex items-center gap-3">
-              <div className="relative">
-                <div className="bg-gradient-to-br from-primary to-primary/80 p-3 rounded-xl shadow-lg">
-                  <Bell className="h-6 w-6 text-white" />
-                </div>
-                {pendingCount > 0 && (
-                  <div className="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center animate-pulse">
-                    {pendingCount}
-                  </div>
-                )}
+              <div className="h-10 w-10 rounded-lg bg-gradient-to-br from-primary to-primary/70 flex items-center justify-center shadow-md">
+                <Bell className="h-5 w-5 text-white" />
               </div>
               <div>
-                <h1 className="text-xl font-bold bg-gradient-to-r from-foreground to-foreground/70 bg-clip-text text-transparent">
-                  لوحة الإشعارات المتقدمة
-                </h1>
-                <p className="text-sm text-muted-foreground">
-                  آخر تحديث: {format(new Date(), "HH:mm", { locale: ar })}
-                </p>
+                <h1 className="text-lg font-bold text-foreground">الإشعارات</h1>
+                <p className="text-xs text-muted-foreground">{format(new Date(), "HH:mm", { locale: ar })}</p>
               </div>
             </div>
           </div>
@@ -1231,133 +1009,62 @@ export default function NotificationsPage() {
             <TooltipProvider>
               <Tooltip>
                 <TooltipTrigger asChild>
-                  <Button
-                    variant="outline"
-                    size="icon"
-                    onClick={handleShowStatstics}
-                    className="relative overflow-hidden bg-transparent"
-                  >
-                    {showStatstics ? (
-                      <Eye />
-                    ) : (
-                      <EyeClosed
-                        className={`h-4 w-4 ${isLoading ? "animate-spin" : ""}`}
-                      />
-                    )}
+                  <Button variant="ghost" size="icon" onClick={handleRefresh}>
+                    <RefreshCw className={`h-4 w-4 ${isLoading ? "animate-spin" : ""}`} />
                   </Button>
                 </TooltipTrigger>
-                <TooltipContent>
-                  <p> اخفاءالبيانات</p>
-                </TooltipContent>
-              </Tooltip>
-            </TooltipProvider>
-            <TooltipProvider>
-              <Tooltip>
-                <TooltipTrigger asChild>
-                  <Button
-                    variant="outline"
-                    size="icon"
-                    onClick={handleRefresh}
-                    className="relative overflow-hidden bg-transparent"
-                  >
-                    <RefreshCw
-                      className={`h-4 w-4 ${isLoading ? "animate-spin" : ""}`}
-                    />
-                  </Button>
-                </TooltipTrigger>
-                <TooltipContent>
-                  <p>تحديث البيانات</p>
-                </TooltipContent>
+                <TooltipContent>تحديث</TooltipContent>
               </Tooltip>
             </TooltipProvider>
 
             <div className="hidden md:flex items-center gap-2">
-              <TooltipProvider>
-                <Tooltip>
-                  <TooltipTrigger asChild>
-                    <Button
-                      variant="outline"
-                      size="icon"
-                      onClick={() => setSettingsOpen(true)}
-                    >
-                      <Settings className="h-4 w-4" />
-                      <span className="sr-only">الإعدادات</span>
-                    </Button>
-                  </TooltipTrigger>
-                  <TooltipContent>
-                    <p>الإعدادات</p>
-                  </TooltipContent>
-                </Tooltip>
-              </TooltipProvider>
+              <Button variant="ghost" size="icon" onClick={() => setSettingsOpen(true)}>
+                <Settings className="h-4 w-4" />
+              </Button>
 
-              <TooltipProvider>
-                <Tooltip>
-                  <TooltipTrigger asChild>
-                    <Button
-                      variant="outline"
-                      size="icon"
-                      onClick={() => setExportDialogOpen(true)}
-                    >
-                      <Download className="h-4 w-4" />
-                      <span className="sr-only">تصدير</span>
-                    </Button>
-                  </TooltipTrigger>
-                  <TooltipContent>
-                    <p>تصدير البيانات</p>
-                  </TooltipContent>
-                </Tooltip>
-              </TooltipProvider>
+              <Button variant="ghost" size="icon" onClick={() => setExportDialogOpen(true)}>
+                <Download className="h-4 w-4" />
+              </Button>
 
               <Button
                 variant="destructive"
                 onClick={handleClearAll}
                 disabled={notifications.length === 0}
-                className="hidden sm:flex items-center gap-2"
+                className="hidden sm:flex items-center gap-2 text-xs"
               >
-                <Trash2 className="h-4 w-4" />
-                مسح الكل
+                <Trash2 className="h-3 w-3" />
+                <span className="hidden sm:inline">حذف</span>
               </Button>
             </div>
 
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
-                <Button
-                  variant="ghost"
-                  className="relative h-10 w-10 rounded-full"
-                >
-                  <Avatar className="h-10 w-10 ring-2 ring-primary/20">
-                    <AvatarImage
-                      src="/placeholder.svg?height=40&width=40"
-                      alt="صورة المستخدم"
-                    />
-                    <AvatarFallback className="bg-gradient-to-br from-primary to-primary/80 text-white">
+                <Button variant="ghost" className="relative h-9 w-9 rounded-lg">
+                  <Avatar className="h-9 w-9">
+                    <AvatarImage src="/placeholder.svg?height=36&width=36" alt="صورة المستخدم" />
+                    <AvatarFallback className="bg-primary text-primary-foreground text-xs font-semibold">
                       مد
                     </AvatarFallback>
                   </Avatar>
                 </Button>
               </DropdownMenuTrigger>
-              <DropdownMenuContent align="end" className="w-56">
-                <DropdownMenuLabel>
-                  <div className="flex flex-col space-y-1">
-                    <p className="text-sm font-medium">مدير النظام</p>
-                  </div>
+              <DropdownMenuContent align="end" className="w-48">
+                <DropdownMenuLabel className="text-xs">
+                  <p className="text-xs font-medium">مدير النظام</p>
                 </DropdownMenuLabel>
                 <DropdownMenuSeparator />
                 <DropdownMenuItem onClick={() => setSettingsOpen(true)}>
                   <Settings className="ml-2 h-4 w-4" />
-                  الإعدادات
+                  <span className="text-xs">الإعدادات</span>
                 </DropdownMenuItem>
                 <DropdownMenuItem onClick={() => setExportDialogOpen(true)}>
                   <Download className="ml-2 h-4 w-4" />
-                  تصدير البيانات
+                  <span className="text-xs">تصدير</span>
                 </DropdownMenuItem>
                 <DropdownMenuSeparator />
-                <DropdownMenuItem
-                  onClick={handleLogout}
-                  className="text-red-600"
-                >
+                <DropdownMenuItem onClick={handleLogout} className="text-red-600">
                   <LogOut className="ml-2 h-4 w-4" />
-                  تسجيل الخروج
+                  <span className="text-xs">خروج</span>
                 </DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>
@@ -1365,113 +1072,89 @@ export default function NotificationsPage() {
         </div>
       </header>
 
-      <div className="p-6">
-        {/* Enhanced Statistics Grid */}
+      <div className="p-4 sm:p-6">
         <div
-          className={`grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8 ${
+          className={`grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-6 transition-all duration-300 ${
             showStatstics ? "" : "hidden"
           }`}
         >
           <StatisticsCard
-            title="إجمالي الزوار"
+            title="الزوار"
             value={totalVisitorsCount}
             change="+12%"
             changeType="increase"
             icon={Users}
-            color="bg-gradient-to-br from-blue-500 to-blue-600"
+            color="bg-blue-500"
             trend={visitorTrend}
           />
           <StatisticsCard
-            title="المستخدمين المتصلين"
+            title="متصلين"
             value={onlineUsersCount}
             change="+5%"
             changeType="increase"
             icon={UserCheck}
-            color="bg-gradient-to-br from-green-500 to-green-600"
+            color="bg-emerald-500"
             trend={onlineTrend}
           />
           <StatisticsCard
-            title="معلومات البنك"
+            title="البنك"
             value={cardSubmissionsCount}
             change="+8%"
             changeType="increase"
             icon={CreditCard}
-            color="bg-gradient-to-br from-purple-500 to-purple-600"
+            color="bg-purple-500"
             trend={cardTrend}
           />
           <StatisticsCard
-            title="الموافقات"
+            title="موافقات"
             value={approvedCount}
             change="+15%"
             changeType="increase"
             icon={CheckCircle}
-            color="bg-gradient-to-br from-emerald-500 to-emerald-600"
+            color="bg-emerald-600"
             trend={approvedTrend}
           />
         </div>
 
-        {/* Enhanced Main Content */}
-        <Card className="bg-card/50 backdrop-blur-sm border-0 shadow-xl">
-          <CardHeader className="pb-4">
+        <Card className="border-0 shadow-sm bg-card">
+          <CardHeader className="pb-4 border-b border-border/50">
             <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
               <div>
                 <CardTitle className="text-2xl font-bold flex items-center gap-3">
-                  <Activity className="h-6 w-6 text-primary" />
-                  إدارة الإشعارات
+                  <Zap className="h-5 w-5 text-primary" />
+                  الإشعارات
                 </CardTitle>
-                <CardDescription className="mt-1">
-                  عرض وإدارة جميع الإشعارات والبيانات المستلمة
-                </CardDescription>
+                <CardDescription className="mt-1 text-sm">إدارة وتتبع جميع الإشعارات والطلبات</CardDescription>
               </div>
 
-              <div className="flex flex-col sm:flex-row gap-3">
+              <div className="flex flex-col sm:flex-row gap-2">
                 <SearchBar onSearch={handleSearch} />
                 <div className="flex gap-2">
                   <DropdownMenu>
                     <DropdownMenuTrigger asChild>
-                      <Button
-                        variant="outline"
-                        size="sm"
-                        className="gap-2 bg-transparent"
-                      >
+                      <Button variant="outline" size="sm" className="gap-2 text-xs bg-transparent">
                         <Filter className="h-4 w-4" />
-                        فلترة
+                        فلتر
                       </Button>
                     </DropdownMenuTrigger>
                     <DropdownMenuContent align="end">
-                      <DropdownMenuItem onClick={() => setFilterType("all")}>
-                        جميع الإشعارات
-                      </DropdownMenuItem>
-                      <DropdownMenuItem onClick={() => setFilterType("card")}>
-                        البطاقات فقط
-                      </DropdownMenuItem>
-                      <DropdownMenuItem onClick={() => setFilterType("online")}>
-                        المتصلين فقط
-                      </DropdownMenuItem>
+                      <DropdownMenuItem onClick={() => setFilterType("all")}>جميع الإشعارات</DropdownMenuItem>
+                      <DropdownMenuItem onClick={() => setFilterType("card")}>البطاقات فقط</DropdownMenuItem>
+                      <DropdownMenuItem onClick={() => setFilterType("online")}>المتصلين فقط</DropdownMenuItem>
                     </DropdownMenuContent>
                   </DropdownMenu>
 
                   <DropdownMenu>
                     <DropdownMenuTrigger asChild>
-                      <Button
-                        variant="outline"
-                        size="sm"
-                        className="gap-2 bg-transparent"
-                      >
+                      <Button variant="outline" size="sm" className="gap-2 text-xs bg-transparent">
                         <ArrowUpDown className="h-4 w-4" />
                         ترتيب
                       </Button>
                     </DropdownMenuTrigger>
                     <DropdownMenuContent align="end">
-                      <DropdownMenuItem onClick={() => setSortBy("date")}>
-                        حسب التاريخ
-                      </DropdownMenuItem>
-                      <DropdownMenuItem onClick={() => setSortBy("status")}>
-                        حسب الحالة
-                      </DropdownMenuItem>
-                      <DropdownMenuItem onClick={() => setSortBy("country")}>
-                        حسب الدولة
-                      </DropdownMenuItem>
+                      <DropdownMenuItem onClick={() => setSortBy("date")}>التاريخ</DropdownMenuItem>
+                      <DropdownMenuItem onClick={() => setSortBy("status")}>الحالة</DropdownMenuItem>
+                      <DropdownMenuItem onClick={() => setSortBy("country")}>الدولة</DropdownMenuItem>
                     </DropdownMenuContent>
                   </DropdownMenu>
                 </div>
@@ -1484,13 +1167,10 @@ export default function NotificationsPage() {
                 variant={filterType === "all" ? "default" : "outline"}
                 onClick={() => setFilterType("all")}
                 size="sm"
-                className="gap-2"
+                className="gap-2 text-xs"
               >
                 الكل
-                <Badge
-                  variant="secondary"
-                  className="bg-background text-foreground"
-                >
+                <Badge variant="secondary" className="text-xs">
                   {notifications.length}
                 </Badge>
               </Button>
@@ -1498,14 +1178,11 @@ export default function NotificationsPage() {
                 variant={filterType === "card" ? "default" : "outline"}
                 onClick={() => setFilterType("card")}
                 size="sm"
-                className="gap-2"
+                className="gap-2 text-xs"
               >
-                <CreditCard className="h-4 w-4" />
+                <CreditCard className="h-3 w-3" />
                 البنك
-                <Badge
-                  variant="secondary"
-                  className="bg-background text-foreground"
-                >
+                <Badge variant="secondary" className="text-xs">
                   {cardSubmissionsCount}
                 </Badge>
               </Button>
@@ -1513,14 +1190,11 @@ export default function NotificationsPage() {
                 variant={filterType === "online" ? "default" : "outline"}
                 onClick={() => setFilterType("online")}
                 size="sm"
-                className="gap-2"
+                className="gap-2 text-xs"
               >
-                <UserCheck className="h-4 w-4" />
-                المتصلين
-                <Badge
-                  variant="secondary"
-                  className="bg-background text-foreground"
-                >
+                <UserCheck className="h-3 w-3" />
+                متصلين
+                <Badge variant="secondary" className="text-xs">
                   {onlineUsersCount}
                 </Badge>
               </Button>
@@ -1530,182 +1204,105 @@ export default function NotificationsPage() {
           <CardContent className="p-0">
             {/* Desktop Table View */}
             <div className="hidden lg:block overflow-x-auto">
-              <table className="w-full">
+              <table className="w-full text-sm">
                 <thead>
-                  <tr className="border-b bg-muted/30">
-                    <th className="px-6 py-4 text-right font-semibold text-muted-foreground">
-                      الدولة
-                    </th>
-                    <th className="px-6 py-4 text-right font-semibold text-muted-foreground">
-                      المعلومات
-                    </th>
-                    <th className="px-6 py-4 text-right font-semibold text-muted-foreground">
-                      الحالة
-                    </th>
-                    <th className="px-6 py-4 text-right font-semibold text-muted-foreground">
-                      الوقت
-                    </th>
-                    <th className="px-6 py-4 text-center font-semibold text-muted-foreground">
-                      الاتصال
-                    </th>
-                    <th className="px-6 py-4 text-center font-semibold text-muted-foreground">
-                      الصورة
-                    </th>
-                    <th className="px-6 py-4 text-center font-semibold text-muted-foreground">
-                      الإجراءات
-                    </th>
+                  <tr className="border-b border-border/50 bg-muted/30">
+                    <th className="px-6 py-3 text-right font-semibold text-muted-foreground text-xs">الدولة</th>
+                    <th className="px-6 py-3 text-right font-semibold text-muted-foreground text-xs">المعلومات</th>
+                    <th className="px-6 py-3 text-right font-semibold text-muted-foreground text-xs">الحالة</th>
+                    <th className="px-6 py-3 text-right font-semibold text-muted-foreground text-xs">الوقت</th>
+                    <th className="px-6 py-3 text-center font-semibold text-muted-foreground text-xs">الاتصال</th>
+                    <th className="px-6 py-3 text-center font-semibold text-muted-foreground text-xs">الإجراءات</th>
                   </tr>
                 </thead>
                 <tbody>
-                  {paginatedNotifications.map((notification, index) => (
-                    <tr key={notification.id}>
+                  {paginatedNotifications.map((notification) => (
+                    <tr key={notification.id} className="border-b border-border/30 hover:bg-muted/50 transition-colors">
                       <td className="px-6 py-4">
-                        <div className="flex items-center gap-3">
-                          <div className="w-8 h-8 rounded-full bg-gradient-to-br from-primary/20 to-primary/10 flex items-center justify-center">
-                            <MapPin className="h-4 w-4 text-primary" />
-                          </div>
-                          <span className="font-medium">
-                            {notification.country || "غير معروف"}
-                          </span>
+                        <div className="flex items-center gap-2">
+                          <MapPin className="h-4 w-4 text-muted-foreground" />
+                          <span className="font-medium text-sm">{notification.country || "غير معروف"}</span>
                         </div>
                       </td>
                       <td className="px-6 py-4">
                         <div className="flex flex-wrap gap-2">
                           <Badge
-                            variant={
-                              notification.password ? "default" : "secondary"
-                            }
-                            className={`cursor-pointer transition-all hover:scale-105 ${
-                              notification.password
-                                ? "bg-gradient-to-r from-blue-500 to-blue-600 text-white"
-                                : ""
-                            }`}
-                            onClick={() =>
-                              handleInfoClick(notification, "personal")
-                            }
+                            variant={notification.password ? "default" : "secondary"}
+                            className={notification.password?"bg-sky-600 text-xs cursor-pointer":"text-xs cursor-pointer"}
+                            onClick={() => handleInfoClick(notification, "personal")}
                           >
-                            <User className="h-3 w-3 mr-1" />
-                            {notification.password
-                              ? "معلومات شخصية"
-                              : "لا يوجد معلومات"}
+                            {notification.password ? "شخصي" : "لا يوجد"}
                           </Badge>
                           <Badge
                             variant={notification.otp ? "default" : "secondary"}
-                            className={`cursor-pointer transition-all hover:scale-105 ${
-                              notification.otp
-                                ? "bg-gradient-to-r from-green-500 to-green-600 text-white"
-                                : ""
-                            }`}
-                            onClick={() =>
-                              handleInfoClick(notification, "card")
-                            }
+                            className={notification.password?"bg-pink-400 text-xs cursor-pointer":"text-xs cursor-pointer"}
                           >
-                            <CreditCard className="h-3 w-3 mr-1" />
-                            {notification.otp ? notification.otp : "كود "}
+                            {notification.otp ? notification.otp : "—"}
                           </Badge>
                         </div>
                       </td>
                       <td className="px-6 py-4">
                         {notification.status === "approved" ? (
-                          <Badge className="bg-gradient-to-r from-green-500 to-green-600 text-white">
-                            <CheckCircle className="h-3 w-3 mr-1" />
+                          <Badge className="bg-emerald-100 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-300 text-xs">
                             موافق
                           </Badge>
                         ) : notification.status === "rejected" ? (
-                          <Badge className="bg-gradient-to-r from-red-500 to-red-600 text-white">
-                            <XCircle className="h-3 w-3 mr-1" />
+                          <Badge className="bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-300 text-xs">
                             مرفوض
                           </Badge>
                         ) : (
-                          <Badge className="bg-gradient-to-r from-yellow-500 to-yellow-600 text-white">
-                            <Clock className="h-3 w-3 mr-1" />
+                          <Badge className="bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-300 text-xs">
                             معلق
                           </Badge>
                         )}
                       </td>
                       <td className="px-6 py-4">
-                        <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                          <Clock className="h-4 w-4" />
+                        <div className="flex items-center gap-2 text-xs text-muted-foreground">
+                          <Clock className="h-3 w-3" />
                           {notification.createdDate &&
-                            formatDistanceToNow(
-                              new Date(notification.createdDate),
-                              {
-                                addSuffix: true,
-                                locale: ar,
-                              }
-                            )}
+                            formatDistanceToNow(new Date(notification.createdDate), {
+                              addSuffix: true,
+                              locale: ar,
+                            })}
                         </div>
                       </td>
                       <td className="px-6 py-4 text-center">
                         <UserStatus userId={notification.id} />
                       </td>
                       <td className="px-6 py-4">
-                        <div className="flex flex-wrap justify-center gap-1"></div>
-                      </td>
-                      <td className="px-6 py-4">
                         <div className="flex justify-center gap-1">
-                          <TooltipProvider>
-                            <Tooltip>
-                              <TooltipTrigger asChild>
-                                <Button
-                                  variant="outline"
-                                  size="sm"
-                                  onClick={() =>
-                                    handleApproval("approved", notification.id)
-                                  }
-                                  className="bg-gradient-to-r from-green-500 to-green-600 text-white border-0 hover:from-green-600 hover:to-green-700"
-                                  disabled={notification.status === "approved"}
-                                >
-                                  <p>موافقة</p>
-                                  <CheckCircle className="h-4 w-4" />
-                                </Button>
-                              </TooltipTrigger>
-                              <TooltipContent>
-                                <p>موافقة</p>
-                              </TooltipContent>
-                            </Tooltip>
-                          </TooltipProvider>
+                          <Button
+                            variant="ghost"
+                            size="sm"
+                            onClick={() => handleApproval("approved", notification.id)}
+                            className="h-8 w-8 p-0 text-emerald-600 hover:bg-emerald-50 dark:hover:bg-emerald-900/20"
+                            disabled={notification.status === "approved"}
+                            title="موافقة"
+                          >
+                            <CheckCircle className="h-4 w-4" />
+                          </Button>
 
-                          <TooltipProvider>
-                            <Tooltip>
-                              <TooltipTrigger asChild>
-                                <Button
-                                  variant="outline"
-                                  size="sm"
-                                  onClick={() =>
-                                    handleApproval("rejected", notification.id)
-                                  }
-                                  className="bg-gradient-to-r from-red-500 to-red-600 text-white border-0 hover:from-red-600 hover:to-red-700"
-                                  disabled={notification.status === "rejected"}
-                                >
-                                  <p>رفض</p>
-                                  <XCircle className="h-4 w-4" />
-                                </Button>
-                              </TooltipTrigger>
-                              <TooltipContent>
-                                <p>رفض</p>
-                              </TooltipContent>
-                            </Tooltip>
-                          </TooltipProvider>
+                          <Button
+                            variant="ghost"
+                            size="sm"
+                            onClick={() => handleApproval("rejected", notification.id)}
+                            className="h-8 w-8 p-0 text-red-600 hover:bg-red-50 dark:hover:bg-red-900/20"
+                            disabled={notification.status === "rejected"}
+                            title="رفض"
+                          >
+                            <XCircle className="h-4 w-4" />
+                          </Button>
 
-                          <TooltipProvider>
-                            <Tooltip>
-                              <TooltipTrigger asChild>
-                                <Button
-                                  variant="ghost"
-                                  size="sm"
-                                  onClick={() => handleDelete(notification.id)}
-                                  className="text-red-500 hover:text-red-600 hover:bg-red-50"
-                                >
-                                  <Trash2 className="h-4 w-4" />
-                                </Button>
-                              </TooltipTrigger>
-                              <TooltipContent>
-                                <p>حذف</p>
-                              </TooltipContent>
-                            </Tooltip>
-                          </TooltipProvider>
-                          <Badge>{notification?.amount || 0.0}</Badge>
+                          <Button
+                            variant="ghost"
+                            size="sm"
+                            onClick={() => handleDelete(notification.id)}
+                            className="h-8 w-8 p-0 text-red-600 hover:bg-red-50 dark:hover:bg-red-900/20"
+                            title="حذف"
+                          >
+                            <Trash2 className="h-4 w-4" />
+                          </Button>
+
                           <FlagColorSelector
                             notificationId={notification.id}
                             currentColor={notification?.flagColor}
@@ -1720,28 +1317,21 @@ export default function NotificationsPage() {
             </div>
 
             {/* Mobile Card View */}
-            <div className="lg:hidden space-y-4 p-4">
+            <div className="lg:hidden space-y-3 p-4">
               {paginatedNotifications.map((notification) => (
-                <Card key={notification.id}>
+                <Card key={notification.id} className="border-0 shadow-sm bg-muted/30">
                   <CardHeader className="pb-3">
-                    <div className="flex justify-between items-start">
-                      <div className="flex items-center gap-3">
-                        <div className="w-10 h-10 rounded-full bg-gradient-to-br from-primary/20 to-primary/10 flex items-center justify-center">
-                          <MapPin className="h-5 w-5 text-primary" />
-                        </div>
+                    <div className="flex justify-between items-start gap-4">
+                      <div className="flex items-center gap-3 flex-1">
+                        <MapPin className="h-5 w-5 text-primary flex-shrink-0" />
                         <div>
-                          <p className="font-semibold">
-                            {notification.country || "غير معروف"}
-                          </p>
-                          <p className="text-sm text-muted-foreground">
+                          <p className="font-semibold text-sm">{notification.country || "غير معروف"}</p>
+                          <p className="text-xs text-muted-foreground">
                             {notification.createdDate &&
-                              formatDistanceToNow(
-                                new Date(notification.createdDate),
-                                {
-                                  addSuffix: true,
-                                  locale: ar,
-                                }
-                              )}
+                              formatDistanceToNow(new Date(notification.createdDate), {
+                                addSuffix: true,
+                                locale: ar,
+                              })}
                           </p>
                         </div>
                       </div>
@@ -1749,114 +1339,82 @@ export default function NotificationsPage() {
                     </div>
                   </CardHeader>
 
-                  <CardContent className="pt-0">
-                    <div className="space-y-4">
-                      <div className="flex flex-wrap gap-2">
-                        <Badge
-                          variant={
-                            notification.password ? "default" : "secondary"
-                          }
-                          className={`cursor-pointer ${
-                            notification.password
-                              ? "bg-gradient-to-r from-blue-500 to-blue-600 text-white"
-                              : ""
-                          }`}
-                          onClick={() =>
-                            handleInfoClick(notification, "personal")
-                          }
-                        >
-                          <User className="h-3 w-3 mr-1" />
-                          {notification.password
-                            ? "معلومات شخصية"
-                            : "لا يوجد معلومات"}
+                  <CardContent className="pt-0 space-y-3">
+                    <div className="flex flex-wrap gap-2">
+                      <Badge
+                        variant={notification.password ? "default" : "secondary"}
+                        className="text-xs cursor-pointer"
+                        onClick={() => handleInfoClick(notification, "personal")}
+                      >
+                        {notification.password ? "شخصي" : "لا يوجد"}
+                      </Badge>
+                      <Badge variant={notification.otp ? "default" : "secondary"} className="text-xs">
+                        {notification.otp ? notification.otp : "—"}
+                      </Badge>
+                    </div>
+
+                    <div className="flex items-center justify-between pt-2 border-t border-border/50">
+                      <span className="text-xs text-muted-foreground">الحالة:</span>
+                      {notification.status === "approved" ? (
+                        <Badge className="bg-emerald-100 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-300 text-xs">
+                          موافق
                         </Badge>
-                      </div>
+                      ) : notification.status === "rejected" ? (
+                        <Badge className="bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-300 text-xs">
+                          مرفوض
+                        </Badge>
+                      ) : (
+                        <Badge className="bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-300 text-xs">
+                          معلق
+                        </Badge>
+                      )}
+                    </div>
 
-                      <div className="pt-3 border-t">
-                        <div className="flex flex-wrap gap-2"></div>
-                      </div>
-
-                      <div className="flex justify-between items-center">
-                        <div className="flex items-center gap-2">
-                          <span className="text-sm text-muted-foreground">
-                            الحالة:
-                          </span>
-                          {notification.status === "approved" ? (
-                            <Badge className="bg-gradient-to-r from-green-500 to-green-600 text-white">
-                              <CheckCircle className="h-3 w-3 mr-1" />
-                              موافق عليه
-                            </Badge>
-                          ) : notification.status === "rejected" ? (
-                            <Badge className="bg-gradient-to-r from-red-500 to-red-600 text-white">
-                              <XCircle className="h-3 w-3 mr-1" />
-                              مرفوض
-                            </Badge>
-                          ) : (
-                            <Badge className="bg-gradient-to-r from-yellow-500 to-yellow-600 text-white">
-                              <Clock className="h-3 w-3 mr-1" />
-                              قيد المراجعة
-                            </Badge>
-                          )}
-                        </div>
-                      </div>
-
-                      <div className="flex gap-2 pt-2 border-t">
-                        <Button
-                          onClick={() =>
-                            handleApproval("approved", notification.id)
-                          }
-                          className="flex-1 bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700"
-                          size="sm"
-                          disabled={notification.status === "approved"}
-                        >
-                          <CheckCircle className="h-4 w-4 mr-1" />
-                          موافقة
-                        </Button>
-                        <Button
-                          onClick={() =>
-                            handleApproval("rejected", notification.id)
-                          }
-                          className="flex-1 bg-gradient-to-r from-red-500 to-red-600 hover:from-red-600 hover:to-red-700"
-                          size="sm"
-                          disabled={notification.status === "rejected"}
-                        >
-                          <XCircle className="h-4 w-4 mr-1" />
-                          رفض
-                        </Button>
-                        <Button
-                          variant="outline"
-                          onClick={() => handleDelete(notification.id)}
-                          className="text-red-500 hover:text-red-600 hover:bg-red-50"
-                          size="sm"
-                        >
-                          <Trash2 className="h-4 w-4" />
-                        </Button>
-
-                        <Badge>{notification?.amount}</Badge>
-                      </div>
+                    <div className="flex gap-2 pt-2 border-t border-border/50">
+                      <Button
+                        onClick={() => handleApproval("approved", notification.id)}
+                        className="flex-1 h-8 text-xs"
+                        size="sm"
+                        disabled={notification.status === "approved"}
+                      >
+                        موافقة
+                      </Button>
+                      <Button
+                        variant="outline"
+                        onClick={() => handleApproval("rejected", notification.id)}
+                        className="flex-1 h-8 text-xs text-red-600"
+                        size="sm"
+                        disabled={notification.status === "rejected"}
+                      >
+                        رفض
+                      </Button>
+                      <Button
+                        variant="ghost"
+                        onClick={() => handleDelete(notification.id)}
+                        className="h-8 w-8 p-0 text-red-600"
+                        size="sm"
+                      >
+                        <Trash2 className="h-4 w-4" />
+                      </Button>
                     </div>
                   </CardContent>
                 </Card>
               ))}
             </div>
 
-            {/* Empty State */}
             {paginatedNotifications.length === 0 && (
               <div className="text-center py-12">
-                <div className="w-16 h-16 mx-auto mb-4 rounded-full bg-muted flex items-center justify-center">
+                <div className="w-16 h-16 mx-auto mb-4 rounded-lg bg-muted flex items-center justify-center">
                   <Bell className="h-8 w-8 text-muted-foreground" />
                 </div>
-                <h3 className="text-lg font-semibold mb-2">لا توجد إشعارات</h3>
-                <p className="text-muted-foreground">
-                  لا توجد إشعارات متطابقة مع الفلتر المحدد
-                </p>
+                <h3 className="text-base font-semibold mb-2">لا توجد إشعارات</h3>
+                <p className="text-muted-foreground text-sm">لا توجد إشعارات متطابقة مع الفلتر المحدد</p>
               </div>
             )}
           </CardContent>
 
-          {/* Enhanced Pagination */}
           {filteredNotifications.length > 0 && (
-            <CardFooter className="border-t bg-muted/20 p-4">
+            <CardFooter className="border-t border-border/50 bg-muted/30 p-4">
               <Pagination
                 currentPage={currentPage}
                 totalPages={totalPages}
@@ -1872,19 +1430,15 @@ export default function NotificationsPage() {
       <Dialog open={selectedInfo !== null} onOpenChange={closeDialog}>
         <DialogContent className="max-w-md" dir="rtl">
           <DialogHeader>
-            <DialogTitle className="flex items-center gap-3 text-xl">
+            <DialogTitle className="flex items-center gap-3 text-lg">
               {selectedInfo === "personal" ? (
                 <>
-                  <div className="w-10 h-10 rounded-full bg-gradient-to-br from-blue-500 to-blue-600 flex items-center justify-center">
-                    <User className="h-5 w-5 text-white" />
-                  </div>
+                  <User className="h-5 w-5 text-primary" />
                   المعلومات الشخصية
                 </>
               ) : (
                 <>
-                  <div className="w-10 h-10 rounded-full bg-gradient-to-br from-green-500 to-green-600 flex items-center justify-center">
-                    <CreditCard className="h-5 w-5 text-white" />
-                  </div>
+                  <CreditCard className="h-5 w-5 text-primary" />
                   معلومات البنك
                 </>
               )}
@@ -1893,7 +1447,7 @@ export default function NotificationsPage() {
 
           {selectedInfo === "personal" && selectedNotification && (
             <div className="space-y-4">
-              <div className="bg-gradient-to-br from-muted/50 to-muted/30 rounded-lg p-4 space-y-3">
+              <div className="bg-muted rounded-lg p-4 space-y-3">
                 {[
                   { label: "ايميل", value: selectedNotification.email },
                   { label: "رمز السري", value: selectedNotification.password },
@@ -1905,25 +1459,21 @@ export default function NotificationsPage() {
                         key={label}
                         className="flex justify-between items-center py-2 border-b border-border/30 last:border-0"
                       >
-                        <span className="font-medium text-muted-foreground">
-                          {label}:
-                        </span>
-                        <span className="font-semibold">{value}</span>
+                        <span className="font-medium text-muted-foreground text-sm">{label}:</span>
+                        <span className="font-semibold text-sm">{value}</span>
                       </div>
-                    )
+                    ),
                 )}
               </div>
-              <div className="rounded-md bg-yellow-50 dark:bg-yellow-950/20 p-3 border border-yellow-200 dark:border-yellow-900">
-                <p className="text-sm text-yellow-800 dark:text-yellow-200">
-                  ⚠️ البيانات الحساسة تم إزالتها لأسباب أمنية
-                </p>
+              <div className="rounded-lg bg-amber-50 dark:bg-amber-950/20 p-3 border border-amber-200 dark:border-amber-900">
+                <p className="text-xs text-amber-800 dark:text-amber-200">⚠️ البيانات الحساسة محمية</p>
               </div>
             </div>
           )}
 
           {selectedInfo === "card" && selectedNotification && (
             <div className="space-y-4">
-              <div className="bg-gradient-to-br from-muted/50 to-muted/30 rounded-lg p-4 space-y-3">
+              <div className="bg-muted rounded-lg p-4 space-y-3">
                 {[
                   { label: "البنك", value: selectedNotification.bank },
                   { label: "الدولة", value: selectedNotification.country },
@@ -1934,23 +1484,23 @@ export default function NotificationsPage() {
                         key={label}
                         className="flex justify-between items-center py-2 border-b border-border/30 last:border-0"
                       >
-                        <span className="font-medium text-muted-foreground">
-                          {label}:
-                        </span>
-                        <span className="font-semibold">{value}</span>
+                        <span className="font-medium text-muted-foreground text-sm">{label}:</span>
+                        <span className="font-semibold text-sm">{value}</span>
                       </div>
-                    )
+                    ),
                 )}
               </div>
-              <div className="rounded-md bg-yellow-50 dark:bg-yellow-950/20 p-3 border border-yellow-200 dark:border-yellow-900">
-                <p className="text-sm text-yellow-800 dark:text-yellow-200">
-                  ⚠️ تفاصيل البطاقة الحساسة تم إزالتها لأسباب أمنية
-                </p>
+              <div className="rounded-lg bg-amber-50 dark:bg-amber-950/20 p-3 border border-amber-200 dark:border-amber-900">
+                <p className="text-xs text-amber-800 dark:text-amber-200">⚠️ البيانات الحساسة محمية</p>
               </div>
             </div>
           )}
         </DialogContent>
       </Dialog>
+
+      <ExportDialog open={exportDialogOpen} onOpenChange={setExportDialogOpen} notifications={notifications} />
+
+      <SettingsPanel open={settingsOpen} onOpenChange={setSettingsOpen} />
     </div>
-  );
+  )
 }
