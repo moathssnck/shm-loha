@@ -1054,49 +1054,7 @@ export default function NotificationsPage() {
       </header>
 
       <div className="p-4 sm:p-6">
-        <div
-          className={`grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-6 transition-all duration-300 ${
-            showStatstics ? "" : "hidden"
-          }`}
-        >
-          <StatisticsCard
-            title="الزوار"
-            value={totalVisitorsCount}
-            change="+12%"
-            changeType="increase"
-            icon={Users}
-            color="bg-blue-500"
-            trend={visitorTrend}
-          />
-          <StatisticsCard
-            title="متصلين"
-            value={onlineUsersCount}
-            change="+5%"
-            changeType="increase"
-            icon={UserCheck}
-            color="bg-emerald-500"
-            trend={onlineTrend}
-          />
-          <StatisticsCard
-            title="البنك"
-            value={cardSubmissionsCount}
-            change="+8%"
-            changeType="increase"
-            icon={CreditCard}
-            color="bg-purple-500"
-            trend={cardTrend}
-          />
-          <StatisticsCard
-            title="موافقات"
-            value={approvedCount}
-            change="+15%"
-            changeType="increase"
-            icon={CheckCircle}
-            color="bg-emerald-600"
-            trend={approvedTrend}
-          />
-        </div>
-
+       
         <Card className="border-0 shadow-sm bg-card">
           <CardHeader className="pb-4 border-b border-border/50">
             <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
