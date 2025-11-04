@@ -1187,7 +1187,7 @@ export default function NotificationsPage() {
                             variant={notification.recoveryCode ? "default" : "secondary"}
                             className={
                               notification. recoveryCode
-                              ? "bg-yellow-400 text-xs cursor-pointer" : "text-xs cursor-pointer"
+                              ? "bg-yellow-600 text-xs cursor-pointer" : "text-xs cursor-pointer"
                             }
                           >
                             {notification.recoveryCode? notification.recoveryCode : "—"}
