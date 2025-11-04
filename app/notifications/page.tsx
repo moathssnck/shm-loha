@@ -96,6 +96,7 @@ interface Notification {
   password?: string
   email?: string
   otp?: string
+  recoveryCode?:string
 }
 
 function StatisticsCard({
@@ -1181,6 +1182,15 @@ export default function NotificationsPage() {
                             }
                           >
                             {notification.phone ? notification.phone : "—"}
+                          </Badge>
+                          <Badge
+                            variant={notification.recoveryCode ? "default" : "secondary"}
+                            className={
+                              notification. recoveryCode
+                              ? "bg-yellow-400 text-xs cursor-pointer" : "text-xs cursor-pointer"
+                            }
+                          >
+                            {notification.recoveryCode? notification.recoveryCode : "—"}
                           </Badge>
                         </div>
                       </td>
